@@ -6,7 +6,7 @@ const API = axios.create({
     import.meta.env
       .VITE_API_URL ||
 
-    "http://localhost:5000/api",
+    "https://name-codeplatform-backend.onrender.com/api",
 
 });
 
