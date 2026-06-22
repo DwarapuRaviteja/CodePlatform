@@ -280,7 +280,7 @@ function WorkspaceTopbar({
               TestCode
 
             </button>
-
+/*
             {/* HISTORY */}
             <button
               onClick={() => navigate("/my-projects")}
@@ -342,7 +342,7 @@ function WorkspaceTopbar({
     </div>
   )
 }
-
+*/
             {/* LOGOUT */}
             <button
               onClick={logout}
