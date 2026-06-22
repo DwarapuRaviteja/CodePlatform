@@ -15,6 +15,7 @@ export const generateCode =
         !prompt ||
         !prompt.trim()
       ) {
+
         return res
           .status(400)
           .json({
@@ -22,6 +23,19 @@ export const generateCode =
             message:
               "Prompt is required",
           });
+
+      }
+
+      if (!req.user) {
+
+        return res
+          .status(401)
+          .json({
+            success: false,
+            message:
+              "Unauthorized",
+          });
+
       }
 
       console.log(
@@ -32,8 +46,6 @@ export const generateCode =
         await generateProjectCode(
           prompt
         );
-
-      // SAVE PROJECT TO DATABASE
 
       const savedProject =
         await Project.create({
@@ -107,10 +119,13 @@ export const generateCode =
       return res
         .status(500)
         .json({
+
           success: false,
+
           message:
             error.message ||
             "AI generation failed",
+
         });
 
     }
