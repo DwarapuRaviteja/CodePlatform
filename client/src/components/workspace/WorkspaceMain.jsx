@@ -30,7 +30,8 @@ function WorkspaceMain() {
       },
 
     });
-
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [projects, setProjects] = useState([]);
   const [previewOpen,
     setPreviewOpen] =
     useState(false);
