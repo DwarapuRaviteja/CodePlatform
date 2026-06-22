@@ -6,7 +6,7 @@ import {
   Rocket,
   History,
 } from "lucide-react";
-
+import PromptHistoryPanel from "./PromptHistoryPanel";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -19,7 +19,7 @@ function WorkspaceTopbar({
   const [openProfile,
     setOpenProfile] =
     useState(false);
-
+ const [showHistory, setShowHistory] = useState(false);
   const user = JSON.parse(
     localStorage.getItem("user")
   );
@@ -283,8 +283,8 @@ function WorkspaceTopbar({
 
             {/* HISTORY */}
             <button
-              onClick={
-                onHistoryClick
+              onClick={() =>
+    setShowHistory(!showHistory)
               }
               className="
                 h-14
@@ -308,6 +308,42 @@ function WorkspaceTopbar({
               History
 
             </button>
+            {
+  showHistory && (
+    <div
+      className="
+        absolute
+        top-20
+        right-0
+        w-[350px]
+        glass
+        rounded-3xl
+        border
+        border-white/10
+        p-4
+        z-50
+      "
+    >
+      <h3 className="font-bold mb-4">
+        Prompt History
+      </h3>
+
+      <div className="space-y-3">
+        <div className="p-3 rounded-xl bg-white/5">
+          Portfolio Website
+        </div>
+
+        <div className="p-3 rounded-xl bg-white/5">
+          Hospital Management System
+        </div>
+
+        <div className="p-3 rounded-xl bg-white/5">
+          AI Chatbot
+        </div>
+      </div>
+    </div>
+  )
+}
 
             {/* LOGOUT */}
             <button
