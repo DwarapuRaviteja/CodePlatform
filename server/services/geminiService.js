@@ -1,90 +1,83 @@
 import dotenv from "dotenv";
 dotenv.config();
+
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(
-  process.env.GEMINI_API_KEY
-);
+const API_KEYS = [
+process.env.GEMINI_KEY_1,
+process.env.GEMINI_KEY_2,
+process.env.GEMINI_KEY_3,
+].filter(Boolean);
 
 export const generateProjectCode = async (
-  prompt
+prompt
 ) => {
-  const model =
-    genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
-    });
 
-  const finalPrompt = `
+const finalPrompt = `
 You are an expert frontend developer.
 
 Generate a complete frontend project.
 
 Requirements:
-- HTML
-- CSS
-- JavaScript
-- Responsive design
-- Modern UI
-- Clean code
-- Beginner friendly
+
+* HTML
+* CSS
+* JavaScript
+* Responsive design
+* Modern UI
+* Clean code
+* Beginner friendly
 
 Return ONLY valid JSON.
 
 Format:
 
 {
-  "html":"",
-  "css":"",
-  "js":"",
-  "explanation":{
-    "html":"",
-    "css":"",
-    "js":""
-  }
+"html":"",
+"css":"",
+"js":"",
+"explanation":{
+"html":"",
+"css":"",
+"js":""
+}
 }
 
 USER REQUEST:
 ${prompt}
 `;
 
-  let result;
+let lastError;
 
-  for (
-    let attempt = 1;
-    attempt <= 3;
-    attempt++
-  ) {
-    try {
-      result =
-        await model.generateContent(
-          finalPrompt
-        );
+for (
+let keyIndex = 0;
+keyIndex < API_KEYS.length;
+keyIndex++
+) {
 
-      break;
-    } catch (error) {
-      console.log(
-        `Gemini Attempt ${attempt}:`,
-        error.message
-      );
+````
+try {
 
-      if (
-        error.status === 503 &&
-        attempt < 3
-      ) {
-        await new Promise(
-          (resolve) =>
-            setTimeout(
-              resolve,
-              3000
-            )
-        );
+  console.log(
+    `Using Gemini Key ${
+      keyIndex + 1
+    }`
+  );
 
-        continue;
-      }
+  const genAI =
+    new GoogleGenerativeAI(
+      API_KEYS[keyIndex]
+    );
 
-      throw error;
-    }
-  }
+  const model =
+    genAI.getGenerativeModel({
+      model: "gemini-2.5-flash",
+    });
+
+  const result =
+    await model.generateContent(
+      finalPrompt
+    );
 
   const rawText =
     result.response.text();
@@ -95,35 +88,81 @@ ${prompt}
       .replace(/```/g, "")
       .trim();
 
-  try {
-
   console.log(
     "========== GEMINI RESPONSE =========="
   );
 
-  console.log(cleanedText);
+  console.log(
+    cleanedText
+  );
 
   console.log(
     "====================================="
   );
 
-  return JSON.parse(cleanedText);
+  return JSON.parse(
+    cleanedText
+  );
 
 } catch (error) {
 
   console.log(
-    "JSON Parse Error:",
-    error
+    `Gemini Key ${
+      keyIndex + 1
+    } Failed:`,
+    error.message
   );
 
-  console.log(
-    "Failed JSON:"
-  );
+  lastError = error;
 
-  console.log(cleanedText);
+  const message =
+    error?.message || "";
 
-  throw new Error(
-    "Gemini returned invalid JSON"
-  );
+  if (
+    message.includes("429") ||
+    error?.status === 429
+  ) {
+
+    console.log(
+      "Rate limit reached. Switching API key..."
+    );
+
+    continue;
+
+  }
+
+  if (
+    error?.status === 503
+  ) {
+
+    console.log(
+      "Gemini temporarily unavailable. Trying next key..."
+    );
+
+    continue;
+
+  }
+
+  if (
+    error instanceof SyntaxError
+  ) {
+
+    throw new Error(
+      "Gemini returned invalid JSON"
+    );
+
+  }
+
 }
+````
+
+}
+
+throw (
+lastError ||
+new Error(
+"All Gemini API keys exhausted"
+)
+);
+
 };
