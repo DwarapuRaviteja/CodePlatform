@@ -115,15 +115,22 @@ async (req, res) => {
   try {
 
     const project =
-      await Project.findById(
-        req.params.id
-      );
+      await Project.findOne({
+
+        _id: req.params.id,
+
+        user: req.user._id,
+
+      });
 
     if (!project) {
 
       return res.status(404).json({
+
         success: false,
+
         message: "Project not found",
+
       });
 
     }
@@ -141,8 +148,11 @@ async (req, res) => {
     console.log(error);
 
     return res.status(500).json({
+
       success: false,
+
       message: "Failed to fetch project",
+
     });
 
   }
@@ -155,10 +165,13 @@ async (req, res) => {
   try {
 
     const project =
-      await Project.findById(
-        req.params.id
-      );
+await Project.findOne({
 
+  _id: req.params.id,
+
+  user: req.user._id,
+
+});
     if (!project) {
 
       return res.status(404).json({
