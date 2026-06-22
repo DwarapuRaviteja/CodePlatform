@@ -4,7 +4,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-
+import DesktopOnly from "./components/DesktopOnly";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -34,6 +34,9 @@ function ProtectedRoute({
 function App() {
 
   return (
+  <>
+    <DesktopOnly />
+
     <BrowserRouter>
 
       <Routes>
@@ -77,8 +80,9 @@ function App() {
 
       </Routes>
 
-    </BrowserRouter>
-  );
+       </BrowserRouter>
+  </>
+);
 }
 
 export default App;
