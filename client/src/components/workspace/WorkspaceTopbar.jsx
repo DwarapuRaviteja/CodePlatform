@@ -283,9 +283,7 @@ function WorkspaceTopbar({
 
             {/* HISTORY */}
             <button
-              onClick={() =>
-    setShowHistory(!showHistory)
-              }
+              onClick={() => navigate("/my-projects")}
               className="
                 h-14
                 px-5
