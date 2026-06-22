@@ -1,8 +1,13 @@
-import {  generateProjectCode,} from "../services/geminiService.js";
+import Project from "../models/Project.js";
+import {
+  generateProjectCode,
+} from "../services/geminiService.js";
 
 export const generateCode =
   async (req, res) => {
+
     try {
+
       const { prompt } =
         req.body;
 
@@ -28,31 +33,75 @@ export const generateCode =
           prompt
         );
 
-      return res
-        .status(200)
-        .json({
-          success: true,
+      // SAVE PROJECT TO DATABASE
+
+      const savedProject =
+        await Project.create({
+
+          user:
+            req.user._id,
+
+          title:
+            prompt.length > 40
+              ? prompt.substring(
+                  0,
+                  40
+                ) + "..."
+              : prompt,
+
+          prompt,
+
           html:
-            generated.html ||
-            "",
+            generated.html || "",
+
           css:
-            generated.css ||
-            "",
+            generated.css || "",
+
           js:
-            generated.js ||
-            "",
+            generated.js || "",
+
           explanation:
-            generated.explanation ||
-            {
+            generated.explanation || {
               html: "",
               css: "",
               js: "",
             },
+
         });
+
+      return res
+        .status(200)
+        .json({
+
+          success: true,
+
+          projectId:
+            savedProject._id,
+
+          html:
+            generated.html || "",
+
+          css:
+            generated.css || "",
+
+          js:
+            generated.js || "",
+
+          explanation:
+            generated.explanation || {
+              html: "",
+              css: "",
+              js: "",
+            },
+
+        });
+
     } catch (error) {
+
       console.error(
         "Generate Error:"
       );
+
       console.error(error);
 
       return res
@@ -63,5 +112,7 @@ export const generateCode =
             error.message ||
             "AI generation failed",
         });
+
     }
+
   };
