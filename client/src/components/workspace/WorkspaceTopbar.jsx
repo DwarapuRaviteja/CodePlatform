@@ -1,12 +1,24 @@
-import { Bell, User, LogOut, ExternalLink, Rocket } from "lucide-react";
+import {
+  Bell,
+  User,
+  LogOut,
+  ExternalLink,
+  Rocket,
+  History,
+} from "lucide-react";
+
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-function WorkspaceTopbar() {
+function WorkspaceTopbar({
+  onHistoryClick,
+}) {
 
   const navigate = useNavigate();
 
-  const [openProfile, setOpenProfile] = useState(false);
+  const [openProfile,
+    setOpenProfile] =
+    useState(false);
 
   const user = JSON.parse(
     localStorage.getItem("user")
@@ -14,8 +26,13 @@ function WorkspaceTopbar() {
 
   const logout = () => {
 
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.removeItem(
+      "token"
+    );
+
+    localStorage.removeItem(
+      "user"
+    );
 
     navigate("/login");
 
@@ -47,7 +64,6 @@ function WorkspaceTopbar() {
         "
       >
 
-        {/* ROCKET LOGO */}
         <div
           className="
             w-16
@@ -67,7 +83,6 @@ function WorkspaceTopbar() {
 
         </div>
 
-        {/* HEADING */}
         <div>
 
           <h1
@@ -146,7 +161,9 @@ function WorkspaceTopbar() {
           {/* PROFILE BUTTON */}
           <button
             onClick={() =>
-              setOpenProfile(!openProfile)
+              setOpenProfile(
+                !openProfile
+              )
             }
             className={`
               flex
@@ -190,10 +207,12 @@ function WorkspaceTopbar() {
             <div className="text-left">
 
               <h3 className="font-bold">
+
                 {
                   user?.name ||
                   "Developer"
                 }
+
               </h3>
 
               <p
@@ -202,16 +221,18 @@ function WorkspaceTopbar() {
                   text-gray-400
                 "
               >
+
                 {
                   user?.email
                 }
+
               </p>
 
             </div>
 
           </button>
 
-          {/* RIGHT SIDE BUTTONS */}
+          {/* EXPANDED BUTTONS */}
           <div
             className={`
               flex
@@ -223,13 +244,13 @@ function WorkspaceTopbar() {
               duration-500
               ${
                 openProfile
-                  ? "opacity-100 max-w-[350px]"
+                  ? "opacity-100 max-w-[600px]"
                   : "opacity-0 max-w-0"
               }
             `}
           >
 
-            {/* PLAYGROUND */}
+            {/* TESTCODE */}
             <button
               onClick={() =>
                 window.open(
@@ -257,6 +278,34 @@ function WorkspaceTopbar() {
               <ExternalLink size={18} />
 
               TestCode
+
+            </button>
+
+            {/* HISTORY */}
+            <button
+              onClick={
+                onHistoryClick
+              }
+              className="
+                h-14
+                px-5
+                rounded-2xl
+                glass
+                border
+                border-white/10
+                flex
+                items-center
+                gap-2
+                hover:bg-white/10
+                transition-all
+                duration-300
+                whitespace-nowrap
+              "
+            >
+
+              <History size={18} />
+
+              History
 
             </button>
 
